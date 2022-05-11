@@ -15,7 +15,7 @@ fn bowling_score(throws: &[i32], score: i32) -> i32 {
     match throws {
         [10, rest @ ..] => bowling_score(rest, score + 10 + rest[0] + rest[1]), // Strike
         [t1, t2, rest @ ..] if t1 + t2 == 10 => bowling_score(rest, score + 10 + rest[0]), // Spare
-        [t1, t2, rest @ ..] => bowling_score(rest, score + t1 + t2), // Open frame
+        [t1, t2, rest @ ..] => bowling_score(rest, score + t1 + t2),            // Open frame
         _ => panic!(),
     }
 }
@@ -23,42 +23,18 @@ fn bowling_score(throws: &[i32], score: i32) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::bowling_score;
+    use rstest::rstest;
 
-    #[test]
-    fn bowling_score_sums() {
-        assert_eq!(0, bowling_score(&[0; 20], 0));
-        assert_eq!(45, bowling_score(&[0, 1, 7, 2, 1, 2, 1, 2, 1, 0, 1, 2, 4, 3, 5, 4, 3, 2, 1, 3], 0));
-        assert_eq!(
-            81,
-            bowling_score(
-                &[1, 5, 3, 6, 7, 2, 3, 6, 4, 4, 5, 3, 3, 3, 4, 5, 8, 1, 2, 6],
-                0
-            )
-        );
-        assert_eq!(
-            94,
-            bowling_score(
-                &[10, 3, 6, 7, 2, 3, 6, 4, 4, 5, 3, 3, 3, 4, 5, 8, 1, 2, 6],
-                0
-            )
-        );
-        assert_eq!(
-            88,
-            bowling_score(
-                &[1, 9, 3, 6, 7, 2, 3, 6, 4, 4, 5, 3, 3, 3, 4, 5, 8, 1, 2, 6],
-                0
-            )
-        );
-        assert_eq!(
-            103,
-            bowling_score(
-                &[10, 4, 6, 7, 2, 3, 6, 4, 4, 5, 3, 3, 3, 4, 5, 8, 1, 2, 6],
-                0
-            )
-        );
-        assert_eq!(
-            300,
-            bowling_score(&[10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 0)
-        );
+    // Using rstest only due to avoiding rustfmt making ugly formatting (max 100 chars per line).
+    #[rstest]
+    #[case(0, &[0; 20])]
+    #[case(45, &[0, 1, 7, 2, 1, 2, 1, 2, 1, 0, 1, 2, 4, 3, 5, 4, 3, 2, 1, 3])]
+    #[case(81, &[1, 5, 3, 6, 7, 2, 3, 6, 4, 4, 5, 3, 3, 3, 4, 5, 8, 1, 2, 6])]
+    #[case(94, &[10, 3, 6, 7, 2, 3, 6, 4, 4, 5, 3, 3, 3, 4, 5, 8, 1, 2, 6])]
+    #[case(88, &[1, 9, 3, 6, 7, 2, 3, 6, 4, 4, 5, 3, 3, 3, 4, 5, 8, 1, 2, 6])]
+    #[case(103, &[10, 4, 6, 7, 2, 3, 6, 4, 4, 5, 3, 3, 3, 4, 5, 8, 1, 2, 6])]
+    #[case(300, &[10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10])]
+    fn bowling_score_test(#[case] expected: i32, #[case] input: &[i32]) {
+        assert_eq!(expected, bowling_score(input, 0))
     }
 }
